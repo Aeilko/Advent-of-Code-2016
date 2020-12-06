@@ -1,19 +1,5 @@
+from utils.file import read_file_content
 
-TEST1 = [None]*3
-ANS1 = [None]*3
-TEST1[0] = "R2, L3"
-ANS1[0] = 5
-TEST1[1] = "R2, R2, R2"
-ANS1[1] = 2
-TEST1[2] = "R5, L5, R5, R3"
-ANS1[2] = 12
-
-INPUT1 = "R2, L3, R2, R4, L2, L1, R2, R4, R1, L4, L5, R5, R5, R2, R2, R1, L2, L3, L2, L1, R3, L5, R187, R1, R4, L1, R5, L3, L4, R50, L4, R2, R70, L3, L2, R4, R3, R194, L3, L4, L4, L3, L4, R4, R5, L1, L5, L4, R1, L2, R4, L5, L3, R4, L5, L5, R5, R3, R5, L2, L4, R4, L1, R3, R1, L1, L2, R2, R2, L3, R3, R2, R5, R2, R5, L3, R2, L5, R1, R2, R2, L4, L5, L1, L4, R4, R3, R1, R2, L1, L2, R4, R5, L2, R3, L4, L5, L5, L4, R4, L2, R1, R1, L2, L3, L2, R2, L4, R3, R2, L1, L3, L2, L4, L4, R2, L3, L3, R2, L4, L3, R4, R3, L2, L1, L4, R4, R2, L4, L4, L5, L1, R2, L5, L2, L3, R2, L2"
-
-TEST2 = ["R8, R4, R4, R8"]
-ANS2 = [4]
-
-INPUT2 = "R2, L3, R2, R4, L2, L1, R2, R4, R1, L4, L5, R5, R5, R2, R2, R1, L2, L3, L2, L1, R3, L5, R187, R1, R4, L1, R5, L3, L4, R50, L4, R2, R70, L3, L2, R4, R3, R194, L3, L4, L4, L3, L4, R4, R5, L1, L5, L4, R1, L2, R4, L5, L3, R4, L5, L5, R5, R3, R5, L2, L4, R4, L1, R3, R1, L1, L2, R2, R2, L3, R3, R2, R5, R2, R5, L3, R2, L5, R1, R2, R2, L4, L5, L1, L4, R4, R3, R1, R2, L1, L2, R4, R5, L2, R3, L4, L5, L5, L4, R4, L2, R1, R1, L2, L3, L2, R2, L4, R3, R2, L1, L3, L2, L4, L4, R2, L3, L3, R2, L4, L3, R4, R3, L2, L1, L4, R4, R2, L4, L4, L5, L1, R2, L5, L2, L3, R2, L2"
 
 def move(x: int, y: int, direction: int, move: str) -> (int, int, int):
     m = move[0]
@@ -35,23 +21,23 @@ def move(x: int, y: int, direction: int, move: str) -> (int, int, int):
     return (x, y, direction)
 
 
-def solve_part1(input: str) -> int:
+def solve_part1(inp: str) -> int:
     direction = 0
     (x, y) = (0, 0)
 
-    ins = input.split(", ")
+    ins = inp.split(", ")
     for i in ins:
         (x, y, direction) = move(x, y, direction, i)
 
     return abs(x)+abs(y)
 
 
-def solve_part2(input: str) -> int:
+def solve_part2(inp: str) -> int:
     direction = 0
     (x, y) = (0, 0)
     visited = set()
 
-    ins = input.split(", ")
+    ins = inp.split(", ")
     found = False
     for i in ins:
         m = i[0]
@@ -79,33 +65,45 @@ def solve_part2(input: str) -> int:
         if found:
             break
 
-    return abs(x)+abs(y)
+    return abs(x)+abs(y) if found else -1
 
 
 def test_part1():
-    for i in range(len(TEST1)):
-        r = solve_part1(TEST1[i])
-        if r != ANS1[i]:
-            print("ERROR ON TEST '" + str(i) + "':\t\t" + str(r) + "\t\t" + str(ANS1[i]))
+    inputs = read_file_content("inputs/test").strip().split("\n")
+    answers = read_file_content("inputs/ans1").strip().split("\n")
+
+    for i in range(len(inputs)):
+        inp = inputs[i]
+        answer = int(answers[i])
+        result = solve_part1(inp)
+        if result == answer:
+            print("Test successful")
         else:
-            print("Test '" + str(i) + "': ok")
+            print("Test unsuccessful: " + str(result) + ", expected: " + str(answer))
 
 
 def test_part2():
-    for i in range(len(TEST2)):
-        r = solve_part2(TEST2[i])
-        if r != ANS2[i]:
-            print("ERROR ON TEST '" + str(i) + "':\t\t" + str(r) + "\t\t" + str(ANS2[i]))
+    inputs = read_file_content("inputs/test").strip().split("\n")
+    answers = read_file_content("inputs/ans2").strip().split("\n")
+
+    for i in range(len(inputs)):
+        inp = inputs[i]
+        answer = int(answers[i])
+        result = solve_part2(inp)
+        if result == answer:
+            print("Test successful")
         else:
-            print("Test '" + str(i) + "': ok")
+            print("Test unsuccessful: " + str(result) + ", expected: " + str(answer))
 
 
 if __name__ == '__main__':
+
+    inp = read_file_content("inputs/input")
+
+    print(" --- Part 1 --- ")
     test_part1()
+    print("Part 1 result:\t" + str(solve_part1(inp)))
 
-    print("\nPart 1 result:\t" + str(solve_part1(INPUT1)))
-
-    print()
+    print("\n --- Part 2 ---")
     test_part2()
-
-    print("\nPart 2 result:\t" + str(solve_part2(INPUT2)))
+    print("Part 2 result:\t" + str(solve_part2(inp)))
